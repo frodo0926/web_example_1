@@ -78,7 +78,7 @@ export default function Nosotros() {
             <div className="col-span-12 lg:col-span-3 lg:col-start-10">
               <Reveal>
                 <p className="text-[0.95rem] leading-relaxed text-ink/60">
-                  Cada pieza que entrega Resplandecer pasa por cuatro manos como mínimo: la
+                  Cada pieza que entrega Iraka pasa por cuatro manos como mínimo: la
                   que la corta, la que la ensambla, la que la lija y la que la revisa antes
                   de salir por la puerta del taller.
                 </p>
@@ -109,7 +109,7 @@ export default function Nosotros() {
         <div className="relative h-[46vh] w-full md:h-[70vh]">
           <SmartImage
             src={IMG.stair}
-            alt="Escalera de carpintería a medida fabricada por Resplandecer"
+            alt="Escalera de carpintería a medida fabricada por Iraka"
             className="h-full w-full"
             parallax
           />

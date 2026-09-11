@@ -22,12 +22,12 @@ import { SplitHeading, Reveal, Marquee } from "@/components/ui";
 import { IMG, TICKER_SERVICES } from "@/data/content";
 
 const TITLES: Record<Route, string> = {
-  home: "Resplandecer — Muebles de autor, cocinas y remodelaciones de alto nivel",
-  servicios: "Servicios — Carpintería, cocinas y remodelaciones | Resplandecer",
-  nosotros: "Nosotros — 120 artesanos, 9 países | Resplandecer",
-  insights: "Insights — Notas desde el taller | Resplandecer",
-  contacto: "Contacto — Inicia tu proyecto | Resplandecer",
-  faq: "FAQ — Preguntas frecuentes | Resplandecer",
+  home: "Iraka — Muebles de autor, cocinas y remodelaciones de alto nivel",
+  servicios: "Servicios — Carpintería, cocinas y remodelaciones | Iraka",
+  nosotros: "Nosotros — 120 artesanos, 9 países | Iraka",
+  insights: "Insights — Notas desde el taller | Iraka",
+  contacto: "Contacto — Inicia tu proyecto | Iraka",
+  faq: "FAQ — Preguntas frecuentes | Iraka",
 };
 
 export default function App() {
@@ -233,8 +233,8 @@ export default function App() {
         >
           <span className="flex items-center gap-3">
             <span className="page-loader-dot dot" />
-            <span className="h-display text-base tracking-[-0.02em] text-white">
-              Resplandecer
+            <span className="h-display text-base tracking-[0.06em] text-white">
+              IRAKA
             </span>
           </span>
           <span className="page-loader-bar relative block h-px w-32 overflow-hidden bg-white/15" />

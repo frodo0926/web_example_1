@@ -383,7 +383,7 @@ export const FAQS: Faq[] = [
     topic: "Fabricación",
     question: "¿Fabrican ustedes los muebles o solo diseñan?",
     answer:
-      "Las dos cosas. Resplandecer opera talleres propios de carpintería, ebanistería y tapicería: diseñamos, fabricamos e instalamos con equipos internos. No tercerizamos la producción, así que respondemos del resultado de principio a fin.",
+      "Las dos cosas. Iraka opera talleres propios de carpintería, ebanistería y tapicería: diseñamos, fabricamos e instalamos con equipos internos. No tercerizamos la producción, así que respondemos del resultado de principio a fin.",
   },
   {
     id: "faq-2",
@@ -430,7 +430,7 @@ export const FAQS: Faq[] = [
   {
     id: "faq-8",
     topic: "Proceso",
-    question: "¿Cómo empiezo un proyecto con Resplandecer?",
+    question: "¿Cómo empiezo un proyecto con Iraka?",
     answer:
       "Escribes por el formulario o al correo del estudio. Hacemos una llamada de 30 minutos, visitamos el espacio, entregamos anteproyecto en 15 días y presupuesto cerrado en 21. Sin coste hasta la firma del anteproyecto.",
   },
@@ -469,7 +469,7 @@ export const HQ = {
   phone: "+57 608 770 0000",
   phoneHref: "tel:+576087700000",
   mobile: "+57 322 252 3331",
-  email: "hola@resplandecer.studio",
+  email: "hola@iraka.co",
   hours: "Lunes a viernes, 08:00 — 18:00 (COT)",
 };
 

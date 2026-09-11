@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IRAKA — Pie de página interactivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0c0c0c;
+    --line:rgba(255,255,255,.12);
+    --dot:250,250,250;
+    --wood:#c28542;
+    --ember:#ff5500;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --disp:"Archivo","Arial Black",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--ink)}
+  body{font-family:var(--mono);color:#fff;overflow-x:hidden}
+
+  /* ---------- pie de página ---------- */
+  .footer{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(194,133,66,.10), transparent 60%),
+      var(--ink);
+    cursor:none;               /* el cursor nativo se oculta en todo el footer */
+    overflow:hidden;
+  }
+  .footer a,.footer button{cursor:none}
+
+  /* grano ambiental */
+  .footer::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- barra superior ---------- */
+  .bar{
+    position:relative;z-index:3;
+    display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+    padding:1.4rem clamp(1.25rem,4vw,4rem);
+    border-bottom:1px solid var(--line);
+  }
+  .bar .brand{display:flex;align-items:center;gap:.7rem}
+  .bar .brand svg{width:22px;height:22px;color:#fff}
+  .bar .brand b{font-family:var(--disp);font-weight:800;letter-spacing:.12em;font-size:.95rem}
+  .bar nav{display:flex;gap:clamp(1rem,2.5vw,2.4rem)}
+  .bar nav a{
+    color:rgba(255,255,255,.6);text-decoration:none;
+    font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+    transition:color .35s ease;
+  }
+  .bar nav a:hover{color:var(--ember)}
+  .bar .loc{font-size:.6rem;letter-spacing:.18em;color:rgba(255,255,255,.4);text-transform:uppercase;white-space:nowrap}
+  @media(max-width:760px){.bar nav{display:none}}
+
+  /* ---------- lienzo de partículas ---------- */
+  .stage{position:relative;z-index:1;height:clamp(240px,42vh,440px)}
+  .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  /* ---------- barra legal ---------- */
+  .legal{
+    position:relative;z-index:3;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;
+    padding:1.1rem clamp(1.25rem,4vw,4rem);
+    border-top:1px solid var(--line);
+    font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.38);
+  }
+  .legal .links{display:flex;gap:1.6rem}
+  .legal a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .3s}
+  .legal a:hover{color:#fff}
+  .legal .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ember);margin-right:.5rem;vertical-align:middle;box-shadow:0 0 10px 2px rgba(255,85,0,.4)}
+
+  /* ---------- cursor de disco de sierra ---------- */
+  #saw{
+    position:fixed;left:0;top:0;z-index:50;width:46px;height:46px;
+    margin:-23px 0 0 -23px;pointer-events:none;
+    opacity:0;transform:scale(.6);
+    transition:opacity .25s ease,transform .25s ease;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));
+  }
+  #saw.on{opacity:1;transform:scale(1)}
+  #saw.spin svg{animation:sawspin var(--saw-speed,.38s) linear infinite}
+  @keyframes sawspin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<footer class="footer" id="footer">
+  <!-- barra superior -->
+  <div class="bar">
+    <span class="brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M4.5 23.5a11.5 11.5 0 0 1 23 0" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+        <path d="M9.4 23.5a6.6 6.6 0 0 1 13.2 0" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" opacity=".55"/>
+        <circle cx="16" cy="23.5" r="2.7" fill="#ff5500"/>
+      </svg>
+      <b>IRAKA</b>
+    </span>
+    <nav aria-label="Pie de página">
+      <a href="#">Servicios</a><a href="#">Nosotros</a><a href="#">Insights</a><a href="#">FAQ</a><a href="#">Contacto</a>
+    </nav>
+    <span class="loc">Sogamoso · Boyacá · CO</span>
+  </div>
+
+  <!-- matriz de puntos -->
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="IRAKA en matriz de puntos interactiva"></canvas>
+  </div>
+
+  <!-- créditos y avisos -->
+  <div class="legal">
+    <span><span class="dot"></span>© MMXXVI Iraka — Carpintería de autor · Valle de Iraka</span>
+    <span class="links"><a href="#">Privacidad</a><a href="#">Cookies</a><a href="#">Aviso legal</a></span>
+  </div>
+</footer>
+
+<!-- cursor disco de sierra -->
+<div id="saw" aria-hidden="true"></div>
+
+<script>
+(() => {
+  "use strict";
+  const footer = document.getElementById("footer");
+  const stage  = document.getElementById("stage");
+  const canvas = document.getElementById("c");
+  const saw    = document.getElementById("saw");
+  const ctx    = canvas.getContext("2d");
+  const WOOD   = [194, 133, 66];           // #c28542
+  const BASE   = [250, 250, 250];
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- construye el SVG del disco de sierra ---------- */
+  (() => {
+    const teeth = 18, R1 = 47, R2 = 37, C = 50;
+    let pts = [];
+    for (let i = 0; i < teeth; i++) {
+      const a0 = (i / teeth) * Math.PI * 2;
+      const a1 = ((i + 0.5) / teeth) * Math.PI * 2;
+      const a2 = ((i + 1) / teeth) * Math.PI * 2;
+      pts.push(`${C + Math.cos(a0) * R2},${C + Math.sin(a0) * R2}`);
+      pts.push(`${C + Math.cos((a0 + a1) / 2) * R1},${C + Math.sin((a0 + a1) / 2) * R1}`);
+      pts.push(`${C + Math.cos(a1) * R2},${C + Math.sin(a1) * R2}`);
+      pts.push(`${C + Math.cos(a2) * R2},${C + Math.sin(a2) * R2}`);
+    }
+    saw.innerHTML =
+      `<svg viewBox="0 0 100 100">
+        <polygon points="${pts.join(" ")}" fill="#d8d8d8"/>
+        <circle cx="50" cy="50" r="34" fill="#c4c4c4"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="3 7"/>
+        <circle cx="50" cy="50" r="7" fill="#0c0c0c"/>
+        <circle cx="50" cy="50" r="7" fill="none" stroke="#8a8a8a" stroke-width="2"/>
+      </svg>`;
+  })();
+
+  /* ---------- estado ---------- */
+  let W = 0, H = 0, dpr = 1;
+  let particles = [];
+  // x/y = coords locales al canvas (físicas) · vx/vy = coords de viewport (sierra fixed)
+  const mouse = { x: -9999, y: -9999, vx: -9999, vy: -9999, in: false };
+  let visible = true;
+
+  /* ---------- rasteriza "IRAKA" y extrae los puntos ---------- */
+  function build() {
+    const rect = stage.getBoundingClientRect();
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = Math.max(1, rect.width);
+    H = Math.max(1, rect.height);
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const off = document.createElement("canvas");
+    off.width = Math.floor(W); off.height = Math.floor(H);
+    const o = off.getContext("2d", { willReadFrequently: true });
+
+    // tamaño de fuente que llena el ancho disponible
+    const word = "IRAKA";
+    let size = H * 0.78;
+    o.font = `800 ${size}px Archivo, "Arial Black", sans-serif`;
+    const measured = o.measureText(word).width;
+    size = Math.min(size, size * (W * 0.92) / (measured || 1));
+    o.font = `800 ${size}px Archivo, "Arial Black", sans-serif`;
+    o.textAlign = "center";
+    o.textBaseline = "middle";
+    o.fillStyle = "#fff";
+    try { o.letterSpacing = `${size * 0.04}px`; } catch (e) {}
+    o.fillText(word, W / 2, H / 2 + size * 0.02);
+
+    const gap = Math.max(CFG.GAP_MIN, Math.round(W / CFG.GAP_DIV)); // densidad alta
+    const data = o.getImageData(0, 0, off.width, off.height).data;
+    const next = [];
+    for (let y = 0; y < H; y += gap) {
+      for (let x = 0; x < W; x += gap) {
+        if (data[(y * off.width + x) * 4 + 3] > 128) {
+          next.push({
+            hx: x, hy: y, x, y, vx: 0, vy: 0,
+            s: CFG.DOT_MIN + Math.random() * CFG.DOT_VAR,
+            k: CFG.SPRING + Math.random() * CFG.SPRING_VAR,
+          });
+        }
+      }
+    }
+    // reutiliza posiciones si el conteo coincide para evitar saltos
+    particles = next.map((p, i) => {
+      const old = particles[i];
+      if (old) { p.x = old.x; p.y = old.y; p.vx = old.vx; p.vy = old.vy; }
+      return p;
+    });
+  }
+
+  /* ================================================================
+     ⚙️ AJUSTES DE LA SIERRA — calibra el efecto desde aquí.
+     Manual completo en docs/PROMPT_MAESTRO.md (§ Ajustes de la sierra).
+     ================================================================ */
+  const CFG = {
+    DOT_MIN: 0.9,      // tamaño base de cada micropunto (px)
+    DOT_VAR: 0.8,      // variación aleatoria de tamaño (px)
+    GAP_DIV: 330,      // densidad: divisor del ancho (mayor = más separados)
+    GAP_MIN: 3,        // paso mínimo entre puntos (px)
+    RADIUS: 92,        // radio de corte del disco (px)
+    PUSH: 3.4,         // fuerza de empuje del disco
+    SWIRL: 0.3,        // remolino del corte (0 radial → 1 muy girado)
+    SPRING: 0.014,     // regreso al sitio (MENOR = restauración más lenta)
+    SPRING_VAR: 0.012, // variación por punto → regreso orgánico
+    DAMP: 0.89,        // fricción (mayor = flotan más tiempo)
+    TINT_AT: 46,       // px de desplazamiento para tinte aserrín completo
+    DUST_MAX: 160,     // motas de aserrín simultáneas
+    DUST_CHANCE: 0.5,  // probabilidad de soltar viruta al cortar
+    SAW_SPEED: 0.38,   // segundos por vuelta del disco
+    SAW_LERP: 0.35,    // suavizado de seguimiento (1 = pegado al cursor)
+  };
+  const R2 = CFG.RADIUS * CFG.RADIUS;
+  let dust = [];
+
+  let staticDrawn = false;
+  function tick(now = 0) {
+    requestAnimationFrame(tick);
+    if (reduced) { if (!staticDrawn) { drawStatic(); staticDrawn = true; } return; }
+    if (!visible) return;
+    staticDrawn = false;
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+        if (mouse.in) {
+          const dx = p.x - mouse.x, dy = p.y - mouse.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < R2 && d2 > 0.01) {
+            const d = Math.sqrt(d2);
+            const f = ((CFG.RADIUS - d) / CFG.RADIUS) * CFG.PUSH;
+            // empuje radial + leve remolino (como el giro del disco)
+            p.vx += (dx / d) * f + (-dy / d) * f * CFG.SWIRL;
+            p.vy += (dy / d) * f + ( dx / d) * f * CFG.SWIRL;
+          }
+        }
+        p.vx += (p.hx - p.x) * p.k;   // resorte propio → regreso desincronizado
+        p.vy += (p.hy - p.y) * p.k;
+        p.vx *= CFG.DAMP; p.vy *= CFG.DAMP;
+        p.x += p.vx;  p.y += p.vy;
+
+        const disp = Math.hypot(p.x - p.hx, p.y - p.hy);
+        const m = Math.min(1, disp / CFG.TINT_AT);    // 0 en reposo → 1 disperso
+      const r = (BASE[0] + (WOOD[0] - BASE[0]) * m) | 0;
+      const g = (BASE[1] + (WOOD[1] - BASE[1]) * m) | 0;
+      const b = (BASE[2] + (WOOD[2] - BASE[2]) * m) | 0;
+      // leve respiración en reposo para que la pieza se sienta viva
+      const jx = p.x + Math.sin(now * 0.0012 + i * 1.7) * 0.4;
+      const jy = p.y + Math.cos(now * 0.001 + i * 2.3) * 0.4;
+      ctx.fillStyle = `rgba(${r},${g},${b},${0.38 + 0.5 * (1 - m * 0.35)})`;
+      ctx.beginPath();
+      ctx.arc(jx, jy, p.s + m * 0.6, 0, 6.2832);
+      ctx.fill();
+
+      // al cortar con fuerza, suelta motas de aserrín
+      if (m > 0.55 && dust.length < CFG.DUST_MAX && Math.random() < CFG.DUST_CHANCE) {
+        const a = Math.random() * Math.PI * 2;
+        const v = 0.6 + Math.random() * 2.2;
+        dust.push({ x: p.x, y: p.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.6, life: 0, max: 40 + Math.random() * 50, s: 0.6 + Math.random() * 1.4 });
+      }
+    }
+
+    // aserrín flotante
+    for (let d = dust.length - 1; d >= 0; d--) {
+      const q = dust[d];
+      q.life++;
+      q.x += q.vx; q.y += q.vy;
+      q.vx *= 0.97; q.vy = q.vy * 0.97 + 0.035;
+      if (q.life >= q.max) { dust.splice(d, 1); continue; }
+      const a = 1 - q.life / q.max;
+      ctx.fillStyle = `rgba(${WOOD[0]},${WOOD[1]},${WOOD[2]},${0.75 * a})`;
+      ctx.beginPath();
+      ctx.arc(q.x, q.y, q.s * a + 0.3, 0, 6.2832);
+      ctx.fill();
+    }
+  }
+
+  function drawStatic() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(250,250,250,0.55)";
+    for (const p of particles) { ctx.beginPath(); ctx.arc(p.hx, p.hy, p.s, 0, 6.2832); ctx.fill(); }
+  }
+
+  /* ---------- puntero + cursor de sierra ---------- */
+  let sx = 0, sy = 0;
+  addEventListener("pointermove", (e) => {
+    const r = stage.getBoundingClientRect();
+    mouse.in = e.clientY > r.top - 6 && e.clientY < r.bottom + 6 && e.clientX > r.left && e.clientX < r.right;
+    mouse.x = e.clientX - r.left;   // locales: el corte coincide con el disco
+    mouse.y = e.clientY - r.top;
+    mouse.vx = e.clientX;           // viewport: posicionan la sierra (fixed)
+    mouse.vy = e.clientY;
+  }, { passive: true });
+
+  saw.style.setProperty("--saw-speed", CFG.SAW_SPEED + "s");
+  (function followSaw() {
+    requestAnimationFrame(followSaw);
+    sx += (mouse.vx - sx) * CFG.SAW_LERP;
+    sy += (mouse.vy - sy) * CFG.SAW_LERP;
+    saw.style.left = sx + "px";
+    saw.style.top = sy + "px";
+  })();
+  // left/top posicionan (sin transición); la escala y opacidad las anima la clase .on
+
+  footer.addEventListener("pointerenter", () => { saw.classList.add("on", "spin"); });
+  footer.addEventListener("pointerleave", () => { saw.classList.remove("on", "spin"); mouse.in = false; mouse.x = mouse.y = mouse.vx = mouse.vy = -9999; });
+
+  /* ---------- responsive + visibilidad ---------- */
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 160); });
+  new IntersectionObserver((e) => { visible = e[0].isIntersecting; }, { rootMargin: "80px" }).observe(stage);
+  document.fonts?.ready.then(build).catch(build);
+  build();
+  if (reduced) drawStatic(); else tick();
+})();
+</script>
+</body>
+</html>

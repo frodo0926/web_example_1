@@ -3,6 +3,7 @@ import { gsap, prefersReducedMotion } from "@/lib/anim";
 import { landGrid } from "@/lib/world";
 import { COLOMBIA_CITIES, OFFICES, TICKER_SERVICES } from "@/data/content";
 import { Marquee } from "@/components/ui";
+import { Logo } from "@/components/Logo";
 
 const HIGHLIGHT = OFFICES.find((o) => o.highlight) ?? null;
 
@@ -239,9 +240,9 @@ export default function Preloader({
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       <header className="shell relative z-10 flex items-center justify-between pt-8">
-        <div className="flex items-baseline gap-3">
-          <span className="h-display text-[1.05rem] tracking-[-0.02em]">Resplandecer</span>
-          <span className="label opacity-40">Group</span>
+        <div className="flex items-center gap-3">
+          <Logo className="text-white" />
+          <span className="label opacity-40">Taller de autor</span>
         </div>
         <span className="label opacity-40">MMXXVI</span>
       </header>

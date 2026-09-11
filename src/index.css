@@ -25,7 +25,7 @@
    --color-mist     → Gris neutro auxiliar (texto terciario, placeholders)
    ══════════════════════════════════════════════════════════════════ */
 @theme {
-  /* ---------- ① PALETA ACTIVA — "Resplandecer" (carpintería premium) --------- */
+  /* ---------- ① PALETA ACTIVA — "Iraka" (carpintería de autor) --------------- */
   --color-ink: #0c0c0c;
   --color-ink-2: #111111;
   --color-ink-3: #161616;
@@ -430,6 +430,28 @@ html.lenis body {
   display: block;
   overflow: hidden;
   min-height: 0;
+}
+
+/* ---------- Cursor de disco de sierra (footer de partículas) ---------- */
+@keyframes sawspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.saw-cursor {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+}
+.saw-cursor.saw-on {
+  opacity: 1;
+  transform: scale(1);
+}
+/* el cursor global cede su lugar a la sierra dentro del footer */
+body.saw-active .cursor-dot,
+body.saw-active .cursor-ring {
+  opacity: 0 !important;
 }
 
 /* ---------- Cargador de transición entre páginas ---------- */

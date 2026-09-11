@@ -9,7 +9,7 @@ const AREAS = ["Carpintería / producción", "Diseño / interiorismo", "Instalac
 const WORK_TYPES = ["Proyecto residencial", "Proyecto comercial", "Alianza / proveedor", "Prensa y medios"];
 
 export const WA_LINK = `https://wa.me/573222523331?text=${encodeURIComponent(
-  "Hola Resplandecer, quiero información sobre sus proyectos.",
+  "Hola Iraka, quiero información sobre sus proyectos.",
 )}`;
 
 export function WhatsAppIcon({ className }: { className?: string }) {

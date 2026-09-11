@@ -1,5 +1,6 @@
 import { HQ, OFFICES, SERVICES, TICKER_SERVICES } from "@/data/content";
 import { WA_LINK, WhatsAppIcon } from "@/pages/Contacto";
+import ParticleWordmark from "@/components/ParticleWordmark";
 import { Marquee, Reveal } from "@/components/ui";
 import type { Route } from "@/lib/router";
 
@@ -20,6 +21,11 @@ export default function Footer({ onNavigate }: { onNavigate: (r: Route) => void 
         duration={44}
         className="border-y border-white/10 py-8 text-white/85"
       />
+
+      {/* IRAKA en matriz de puntos con cursor de sierra */}
+      <div className="relative z-10">
+        <ParticleWordmark />
+      </div>
 
       <div className="shell relative z-10 py-20 md:py-28">
         <div className="grid grid-cols-12 gap-y-14 gap-x-8">
@@ -83,7 +89,7 @@ export default function Footer({ onNavigate }: { onNavigate: (r: Route) => void 
               ))}
               <li>
                 <a
-                  href="https://www.linkedin.com/company/resplandecer"
+                  href="https://www.linkedin.com/company/iraka-taller"
                   target="_blank"
                   rel="noreferrer noopener"
                   data-cursor="link"
@@ -151,7 +157,7 @@ export default function Footer({ onNavigate }: { onNavigate: (r: Route) => void 
 
       <div className="shell relative z-10 flex flex-col items-start justify-between gap-4 border-t border-white/10 py-7 md:flex-row md:items-center">
         <p className="mono text-[0.6rem] text-white/35">
-          © MMXXVI Resplandecer Group — Carpintería, muebles y remodelación
+          © MMXXVI Iraka — Carpintería de autor · Valle de Iraka, Boyacá
         </p>
         <div className="flex flex-wrap items-center gap-6">
           <a href="#/faq" onClick={go("faq")} className="mono text-[0.6rem] text-white/35 hover:text-white">

@@ -4,6 +4,7 @@ import { ROUTE_META, type Route } from "@/lib/router";
 import { gsap, lockScroll } from "@/lib/anim";
 import { cn } from "@/utils/cn";
 import { SmartImage } from "@/components/ui";
+import { Logo } from "@/components/Logo";
 
 export default function Nav({
   route,
@@ -130,22 +131,12 @@ export default function Nav({
               className="group flex items-center gap-3"
               data-cursor="link"
             >
-              <span
+              <Logo
                 className={cn(
-                  "relative flex h-[26px] w-[26px] items-center justify-center rounded-full border transition-colors duration-500",
-                  light ? "border-ink/30" : "border-white/30",
-                )}
-              >
-                <span className="dot scale-[0.55] group-hover:scale-100 transition-transform duration-500" />
-              </span>
-              <span
-                className={cn(
-                  "h-display text-[1.05rem] leading-none tracking-[-0.02em] transition-colors duration-500",
+                  "transition-colors duration-500",
                   light ? "text-ink" : "text-white",
                 )}
-              >
-                Resplandecer
-              </span>
+              />
             </a>
 
             {/* Links desktop */}

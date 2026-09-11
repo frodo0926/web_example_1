@@ -150,7 +150,7 @@ export default function Home({
         <div className="absolute inset-0 lg:hidden">
           <SmartImage
             src={IMG.livingLight}
-            alt="Salón con mobiliario de madera diseñado por Resplandecer"
+            alt="Salón con mobiliario de madera diseñado por Iraka"
             className="h-full w-full"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/40" />
@@ -251,7 +251,7 @@ export default function Home({
             <div className="col-span-12 lg:col-span-4 lg:pt-6">
               <Reveal>
                 <p className="body-lg text-ink/70">
-                  Resplandecer nació en 2018 en un taller de 200 m² en Sogamoso, Boyacá. Hoy somos 120
+                  Iraka nació en 2018 en un taller de 200 m² en Sogamoso, Boyacá. Hoy somos 120
                   artesanos, tres fábricas y un estudio de interiorismo que trabaja como un
                   único equipo.
                 </p>
@@ -268,7 +268,7 @@ export default function Home({
         <div className="relative h-[52vh] w-full md:h-[78vh]">
           <SmartImage
             src={IMG.openPlan}
-            alt="Salón-comedor de proyecto integral de Resplandecer con carpintería a medida"
+            alt="Salón-comedor de proyecto integral de Iraka con carpintería a medida"
             className="h-full w-full"
             parallax
             priority
