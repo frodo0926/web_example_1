@@ -167,8 +167,23 @@ export default function Preloader({
     paint(0);
 
     const state = { v: 0 };
-    const handleDone = () => {
+    const handleDone = async () => {
       setLeaving(true);
+      // Esperamos a que las tipografías del sitio estén listas (con tope de
+      // seguridad) para que la página no "refresque" ni reflowee al revelarse.
+      try {
+        await Promise.race([
+          Promise.all([
+            document.fonts.load('700 1em "Archivo"'),
+            document.fonts.load('600 1em "Archivo"'),
+            document.fonts.load('400 1em "Inter"'),
+            document.fonts.load('500 1em "IBM Plex Mono"'),
+          ]),
+          new Promise((r) => setTimeout(r, 1400)),
+        ]);
+      } catch {
+        /* si la API de fuentes falla, seguimos igualmente */
+      }
       // montamos la página debajo de la cortina antes de levantarla
       onReveal();
       gsap

@@ -1,10 +1,7 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+// Sin StrictMode: evita el doble montaje de efectos en canvas/GSAP/Lenis,
+// que producía un parpadeo de "doble carga" en la pieza del hero.
+createRoot(document.getElementById("root")!).render(<App />);

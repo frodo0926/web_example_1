@@ -9,7 +9,7 @@ import Nosotros from "@/pages/Nosotros";
 import Insights from "@/pages/Insights";
 import Contacto from "@/pages/Contacto";
 import Faq from "@/pages/Faq";
-import { ROUTE_META, parseHash, routeFromHash, type Route } from "@/lib/router";
+import { parseHash, routeFromHash, type Route } from "@/lib/router";
 import {
   gsap,
   initSmoothScroll,
@@ -36,14 +36,17 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [param, setParam] = useState<string | undefined>(undefined);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const panelA = useRef<HTMLDivElement>(null);
-  const panelB = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
+  const colsRef = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
 
   /* ---------- smooth scroll + precarga de imágenes clave ---------- */
   useEffect(() => {
+    // Evita que el navegador restaure el scroll del reload: la página
+    // siempre se entrega desde arriba, sin salto que parezca un refresco.
+    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
     initSmoothScroll();
     [IMG.openPlan, IMG.livingLight, IMG.workshopSaw].forEach((src) => {
       const i = new Image();
@@ -120,31 +123,30 @@ export default function App() {
       busy.current = true;
       const overlay = overlayRef.current;
       if (overlay) overlay.style.pointerEvents = "auto";
+      const cols = colsRef.current
+        ? (Array.from(colsRef.current.children) as HTMLElement[])
+        : [];
 
       gsap
         .timeline({
           onComplete: () => {
             busy.current = false;
             if (overlay) overlay.style.pointerEvents = "none";
-            if (panelA.current) gsap.set(panelA.current, { yPercent: 100 });
-            if (panelB.current) gsap.set(panelB.current, { yPercent: 100 });
+            gsap.set(cols, { yPercent: 100 });
+            if (loaderRef.current) gsap.set(loaderRef.current, { autoAlpha: 0 });
           },
         })
-        .fromTo(
-          labelRef.current,
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" },
-          0.25,
-        )
-        .to(panelB.current, { yPercent: 0, duration: 0.55, ease: "power3.inOut" }, 0)
-        .to(panelA.current, { yPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0.07)
+        // 1) columnas escalonadas con filo luminoso cubren la pantalla
+        .to(cols, { yPercent: 0, duration: 0.52, ease: "power4.inOut", stagger: 0.055 }, 0)
+        // 2) cargador de marca mientras se intercambia la página
+        .to(loaderRef.current, { autoAlpha: 1, duration: 0.22, ease: "power2.out" }, 0.62)
         .add(() => {
           window.location.hash = targetHash;
           apply();
-        })
-        .to(labelRef.current, { autoAlpha: 0, y: -18, duration: 0.35, ease: "power3.in" }, 1.15)
-        .to(panelA.current, { yPercent: -100, duration: 0.9, ease: "expo.inOut" }, 1.3)
-        .to(panelB.current, { yPercent: -100, duration: 0.9, ease: "expo.inOut" }, 1.38);
+        }, 0.68)
+        .to(loaderRef.current, { autoAlpha: 0, duration: 0.2, ease: "power2.in" }, "+=0.48")
+        // 3) las columnas continúan su camino y descubren la página nueva
+        .to(cols, { yPercent: -100, duration: 0.58, ease: "expo.inOut", stagger: 0.055 }, 1.36);
     },
     [route, param],
   );
@@ -181,8 +183,10 @@ export default function App() {
       {booting && (
         <Preloader
           onReveal={() => {
+            window.scrollTo(0, 0);
             setReady(true);
             lockScroll(false);
+            scrollTop(true);
           }}
           onDone={() => setBooting(false)}
         />
@@ -206,23 +210,38 @@ export default function App() {
         className="pointer-events-none fixed inset-0 z-[150]"
         aria-hidden="true"
       >
+        {/* Columnas escalonadas con filo luminoso (transición tipo blinds) */}
+        <div ref={colsRef} className="absolute inset-0 flex">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative h-full flex-1 bg-ink will-change-transform"
+              style={{
+                transform: "translateY(100%)",
+                borderRight: i < 5 ? "1px solid rgba(255,255,255,0.05)" : undefined,
+              }}
+            >
+              <span className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-ember to-transparent" />
+            </div>
+          ))}
+        </div>
+        {/* Cargador de marca visible mientras la cortina cubre */}
         <div
-          ref={panelB}
-          className="absolute inset-0 bg-electric"
-          style={{ transform: "translateY(100%)" }}
-        />
-        <div
-          ref={panelA}
-          className="absolute inset-0 bg-ink"
-          style={{ transform: "translateY(100%)" }}
-        />
-        <span
-          ref={labelRef}
-          className="mono absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[0.7rem] tracking-[0.3em] text-white/80"
-          style={{ opacity: 0 }}
+          ref={loaderRef}
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4"
+          style={{ opacity: 0, visibility: "hidden" }}
         >
-          Resplandecer — {ROUTE_META[route].label}
-        </span>
+          <span className="flex items-center gap-3">
+            <span className="page-loader-dot dot" />
+            <span className="h-display text-base tracking-[-0.02em] text-white">
+              Resplandecer
+            </span>
+          </span>
+          <span className="page-loader-bar relative block h-px w-32 overflow-hidden bg-white/15" />
+          <span className="mono text-[0.55rem] tracking-[0.34em] text-white/50">
+            CARGANDO
+          </span>
+        </div>
       </div>
     </>
   );

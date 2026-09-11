@@ -110,20 +110,14 @@ export default function Home({
       initReveals(root);
 
       if (!prefersReducedMotion() && heroRef.current) {
-        gsap
-          .timeline({ delay: 0.1 })
-          .fromTo(
-            "[data-hero-fade]",
-            { y: 46, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 1.3, stagger: 0.11, ease: "expo.out" },
-          )
-          .fromTo(
-            "[data-hero-globe]",
-            { autoAlpha: 0, scale: 0.86 },
-            { autoAlpha: 1, scale: 1, duration: 2.2, ease: "expo.out" },
-            0.1,
-          );
+        gsap.fromTo(
+          "[data-hero-fade]",
+          { y: 46, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 1.3, stagger: 0.11, ease: "expo.out", delay: 0.1 },
+        );
       }
+      // El orbe se revela por sí mismo (fundido propio del canvas) una vez que su
+      // primer frame está dibujado: una sola aparición, sin doble carga.
     }, root);
 
     const t = setTimeout(() => ScrollTrigger.refresh(), 400);
@@ -147,7 +141,7 @@ export default function Home({
         {/* Escultura laminada — árbol → mesa → mueble → ambiente. Solo desktop, arrastrable */}
         <div
           data-hero-globe
-          className="pointer-events-auto absolute right-[2%] top-[45%] hidden h-[66vh] w-[66vh] -translate-y-1/2 opacity-0 lg:block xl:h-[76vh] xl:w-[76vh]"
+          className="pointer-events-auto absolute right-[2%] top-[45%] hidden h-[66vh] w-[66vh] -translate-y-1/2 lg:block xl:h-[76vh] xl:w-[76vh]"
         >
           <MaterialOrb className="h-full w-full" />
         </div>

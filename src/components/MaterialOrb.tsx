@@ -125,6 +125,8 @@ export default function MaterialOrb({
     let stageProgress = reduced ? 2.1 : clamp(initialStage, 0, STAGE_COUNT - 1) + 0.02;
     let pausedUntil = 0;
     let activeIndex = -1;
+    let disposed = false;
+    let revealed = false;
 
     const sx = new Float32Array(POINT_COUNT);
     const sy = new Float32Array(POINT_COUNT);
@@ -192,6 +194,7 @@ export default function MaterialOrb({
     };
 
     const draw = (now: number) => {
+      if (disposed) return;
       raf = requestAnimationFrame(draw);
       if (!visible) return;
       const dt = Math.min(0.05, (now - lastTime) / 1000);
@@ -470,6 +473,12 @@ export default function MaterialOrb({
         ctx.fill();
         ctx.restore();
       }
+
+      // Primer frame completo listo → revelado único, sin parpadeo
+      if (!revealed) {
+        revealed = true;
+        canvas.style.opacity = "1";
+      }
     };
 
     raf = requestAnimationFrame(draw);
@@ -533,6 +542,7 @@ export default function MaterialOrb({
     canvas.addEventListener("click", onClickCapture, true);
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
@@ -561,8 +571,9 @@ export default function MaterialOrb({
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label="Escultura laminada interactiva que transforma un árbol en una mesa, un sillón de autor y un ambiente completo. Arrástrala para girarla."
+        aria-label="Escultura laminada interactiva que transforma un árbol en una mesa, una silla de autor y un ambiente completo. Arrástrala para girarla."
         className="relative z-10 block h-full w-full"
+        style={{ opacity: 0, transition: "opacity 0.9s ease 0.05s" }}
       />
 
       {/* HUD narrativo — evoluciona con cada etapa */}

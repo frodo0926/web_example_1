@@ -432,6 +432,37 @@ html.lenis body {
   min-height: 0;
 }
 
+/* ---------- Cargador de transición entre páginas ---------- */
+@keyframes loader-bar {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+.page-loader-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, #ff5500 45%, #ff5500 55%, transparent);
+  animation: loader-bar 0.9s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+@keyframes loader-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.7);
+    opacity: 0.55;
+  }
+}
+.page-loader-dot {
+  animation: loader-dot 0.9s ease-in-out infinite;
+}
+
 /* ---------- Cursor ---------- */
 .cursor-dot,
 .cursor-ring {
