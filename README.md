@@ -1,10 +1,11 @@
-# Resplandecer
+# IRAKA
 
 > Carpintería paramétrica, muebles de autor, cocinas y remodelaciones integrales —
 > presentadas como una experiencia digital de nivel agencia.
 
-Sitio corporativo de **Resplandecer**, un grupo de carpintería de alta calidad con sede en
-**Sogamoso, Boyacá (Colombia)**, cobertura en todo el país y talleres en 9 países.
+Sitio corporativo de **Iraka**, taller de carpintería de autor con sede en
+**Sogamoso, Boyacá (Colombia)** —el valle de Iraka—, cobertura en todo el país
+y talleres en 9 países.
 El proyecto toma como referencia el estándar visual de los sitios premiados en Awwwards:
 minimalismo editorial, tipografía protagonista, animaciones premium y dos piezas
 interactivas construidas a medida.
@@ -57,8 +58,8 @@ interactivas construidas a medida.
 
 ```bash
 # 1. Clona e instala
-git clone <tu-repo> resplandecer
-cd resplandecer
+git clone <tu-repo> iraka
+cd iraka
 npm install
 
 # 2. Desarrollo
@@ -146,7 +147,7 @@ el prompt reutilizable y las guías paso a paso.
 
 - 🌐 Sede: Carrera 11 № 14-25, Sogamoso, Boyacá — Colombia
 - 💬 WhatsApp: +57 322 252 3331
-- ✉️ hola@resplandecer.studio
+- ✉️ hola@iraka.co
 
 ---
 
